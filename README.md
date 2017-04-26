@@ -12,9 +12,13 @@ Le script a été majoritairement fait pour le fun pour mettre en vis-à-vis des
 
 ## Exemples
 
-![Pourcentage Macron en fonction du nombre d'inscrit](Exemples-PNG/Nb-Inscrits-Macron.png)
+![Pourcentage Macron en fonction du nombre d'inscrits dans la commune](Exemples-PNG/Nb-Inscrits-Macron.png)
 
-![Pourcentage Le Pen en fonction du nombre d'inscrit](Exemples-PNG/Nb-Inscrits-Le-Pen.png)
+![Pourcentage Le Pen en fonction du nombre d'inscrits dans la commune](Exemples-PNG/Nb-Inscrits-Le-Pen.png)
+
+![Pourcentage Fillon en fonction du nombre de pharmacies dans la commune](Exemples-PNG/Nb-Pharmacies-Fillon.png)
+
+![Pourcentage Mélenchon en fonction du pourcentage de propriétaires dans la commune](Exemples-PNG/Nb-Proprietaires-Mélenchon.png)
 
 ## Système requis
 
@@ -46,4 +50,5 @@ Les références techniques sont au sein du code.
 
 Jeux de données utilisés :
 
-* [Résultats élections présidentielle 2017](https://www.data.gouv.fr/fr/datasets/election-presidentielle-des-23-avril-et-7-mai-2017-resultats-du-1er-tour-1/) : nombre d'inscrits, pourcentage de vote par candidats, etc. - INSEE (Licence ODbL)
+* [Résultats élections présidentielle 2017](https://www.data.gouv.fr/fr/datasets/election-presidentielle-des-23-avril-et-7-mai-2017-resultats-du-1er-tour-1/) : nombre d'inscrits, pourcentage de vote par candidats, etc. - INSEE
+* [Data INSEE sur les communes](http://www.data.gouv.fr/fr/datasets/data-insee-sur-les-communes/) : nombre de dentistes, de propriétaires, etc. - INSEE
