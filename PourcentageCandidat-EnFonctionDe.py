@@ -35,8 +35,9 @@ en_fonction_de = "INSCRITS"
 # Possibilités : INSCRITS : Nombre d'inscrits par commune
 #                PHARMACIES : Nombre de pharmacies dans la commune
 #                PROPRIETAIRES : Pourcentage de propriétaire dans la population
-#  /\ 
-# /!\ You should change x_start & x_end correspondingly
+#				 CAPACITE_FISCALE : Capacite fiscale moyenne de la commune
+#  / \ 
+# / ! \ You should change x_start & x_end correspondingly
 
 # Graphic informations
 x_start = 10
@@ -63,6 +64,7 @@ DATAINSEE_GEOCODE = 0
 NB_DENTISTES = 18
 NB_PHARMACIES = 1
 NB_PROPRIETAIRES = 31
+CAPACITE_FISCALE = 78
 POPULATION = 26
 MAX_SEARCH_LOOP = 10
 
@@ -86,7 +88,7 @@ for i in range(0, len(x_axis)):
     calculs['total'].append(0.00)
 
 # Initializing files
-if (en_fonction_de == "PHARMACIES" or en_fonction_de == "PROPRIETAIRES"):
+if (en_fonction_de in ["PHARMACIES", "PROPRIETAIRES", "CAPACITE_FISCALE"]):
     data_insee_communes = open("DataINSEECommunes.csv")
     data_insee_communes_reader = csv.reader(data_insee_communes, delimiter = ';')
     #for i in range(1, DATAINSEE_IGNORE_LINES):
@@ -158,6 +160,15 @@ def pourcent_proprio(array):
     else:
         return int( float(row[NB_PROPRIETAIRES]) / float(row[POPULATION]) * 100)
 # --
+# -- Capacité fiscale
+def capacite_fiscale(array):
+    row = find_commune_get_row(array)
+    
+    if (row == None):
+        return None;
+    else:
+        return int(row[CAPACITE_FISCALE])
+# --
 
 # Oui je n'ai pas réfléchi 1 seconde : http://stackoverflow.com/a/2566508
 def find_nearest_idx(array,value):
@@ -182,6 +193,8 @@ with open('Resultats2017.csv') as csvfile:
              value = nombre_pharmacies(row)
          elif (en_fonction_de == "PROPRIETAIRES"):
              value = pourcent_proprio(row)
+         elif (en_fonction_de == "CAPACITE_FISCALE"):
+             value = capacite_fiscale(row)
          else:
              value = nombre_inscrits(row)
          
