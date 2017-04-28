@@ -35,7 +35,8 @@ en_fonction_de = "INSCRITS"
 # Possibilités : INSCRITS : Nombre d'inscrits par commune
 #                PHARMACIES : Nombre de pharmacies dans la commune
 #                PROPRIETAIRES : Pourcentage de propriétaire dans la population
-#				 CAPACITE_FISCALE : Capacite fiscale moyenne de la commune
+#                CAPACITE_FISCALE : Capacite fiscale moyenne de la commune
+#                MEDIANE : Médiane du niveau de vie dans la commune
 #  / \ 
 # / ! \ You should change x_start & x_end correspondingly
 
@@ -58,15 +59,19 @@ INSCRITS = 4
 DECALAGE_POURCENTAGE = 4
 # RESULTATS_IGNORE_LINES = 4
 
+IDX_GEOCODE = 0
 # Data INSEE sur les communes
 DATAINSEE_IGNORE_LINES = 1
-DATAINSEE_GEOCODE = 0
 NB_DENTISTES = 18
 NB_PHARMACIES = 1
 NB_PROPRIETAIRES = 31
 CAPACITE_FISCALE = 78
 POPULATION = 26
 MAX_SEARCH_LOOP = 10
+
+# INSEE - Revenus et pauvreté
+REVENUS_IGNORE_LINES = 6
+MEDIANE = 4
 
 # Generating x axis :
 
@@ -88,12 +93,17 @@ for i in range(0, len(x_axis)):
     calculs['total'].append(0.00)
 
 # Initializing files
+insee = {}
 if (en_fonction_de in ["PHARMACIES", "PROPRIETAIRES", "CAPACITE_FISCALE"]):
-    data_insee_communes = open("DataINSEECommunes.csv")
-    data_insee_communes_reader = csv.reader(data_insee_communes, delimiter = ';')
-    #for i in range(1, DATAINSEE_IGNORE_LINES):
-    data_insee_communes_row = next(data_insee_communes_reader)
-    #~ data_insee_communes_cursor = data_insee_communes.tell()
+    insee['communes'] = {}
+    insee['communes']['data'] = open("INSEE-DataCommunes.csv")
+    insee['communes']['reader'] = csv.reader(insee['communes']['data'], delimiter = ';')
+    insee['communes']['row'] = next(insee['communes']['reader'])
+if (en_fonction_de == "MEDIANE"):
+    insee['revenus'] = {}
+    insee['revenus']['data'] = open("INSEE-Revenus-Pauvrete.csv")
+    insee['revenus']['reader'] = csv.reader(insee['revenus']['data'], delimiter = ';')
+    insee['revenus']['row'] = next(insee['revenus']['reader'])
 
 def from_comma_to_float(toconvert):
     return float(toconvert.replace(',', '.'))
@@ -103,8 +113,8 @@ def from_comma_to_float(toconvert):
 def nombre_inscrits(array):
     return int(array[INSCRITS])
 
-# -- Global function for INSEE Data on communes
-def find_commune_get_row(array):
+# -- Global function for INSEE Données communes // Revenus & pauvreté
+def find_commune_get_row(array, dataname):
 
     dep = array[DEPARTEMENT]
     com = array[CODE_COMMUNE]
@@ -119,30 +129,28 @@ def find_commune_get_row(array):
     if (geocode in ["31300", "35317", "51201", "52033", "52124", "52266", "52278", "52465", "55138", "62847", "67057", "76601", "89326"]):
         return None
 
-    global data_insee_communes_row
-    global data_insee_communes_reader
-    global data_insee_communes
+    global insee
     
     for i in range(1, MAX_SEARCH_LOOP):
-        if (data_insee_communes_row[DATAINSEE_GEOCODE] == geocode):
-            return data_insee_communes_row
+        if (insee[dataname]['row'][IDX_GEOCODE] == geocode):
+            return insee[dataname]['row']
         else:
-            data_insee_communes_row = next(data_insee_communes_reader)
+            insee[dataname]['row'] = next(insee[dataname]['reader'])
     
     # On emploi les grands moyens // Recherche dans tout le fichier
     
-    data_insee_communes.seek(0)
-    for data_insee_communes_row in data_insee_communes_reader:
-        if (data_insee_communes_row[DATAINSEE_GEOCODE] == geocode):
-            return data_insee_communes_row
+    insee[dataname]['data'].seek(0)
+    for insee[dataname]['row'] in insee[dataname]['reader']:
+        if (insee[dataname]['row'][IDX_GEOCODE] == geocode):
+            return insee[dataname]['row']
     
     print("/!\ La commune "+geocode+" n'a pas pu être trouvée")
-    data_insee_communes.seek(0)
+    insee[dataname]['data'].seek(0)
     return None
 # --
 # -- Nombre de pharmacies
 def nombre_pharmacies(array):
-    row = find_commune_get_row(array)
+    row = find_commune_get_row(array, "communes")
     
     if (row == None):
         return None;
@@ -153,7 +161,7 @@ def nombre_pharmacies(array):
 # --
 # -- Pourcentage de propriétaires
 def pourcent_proprio(array):
-    row = find_commune_get_row(array)
+    row = find_commune_get_row(array, "communes")
     
     if (row == None):
         return None;
@@ -162,12 +170,23 @@ def pourcent_proprio(array):
 # --
 # -- Capacité fiscale
 def capacite_fiscale(array):
-    row = find_commune_get_row(array)
+    row = find_commune_get_row(array, "communes")
     
     if (row == None):
         return None;
     else:
         return int(row[CAPACITE_FISCALE])
+# --
+# -- Médiane
+def mediane(array):
+    row = find_commune_get_row(array, "revenus")
+    
+    if (row == None):
+        return None
+    elif (row[MEDIANE] == ""):
+        return None
+    else:
+        return from_comma_to_float(row[MEDIANE])
 # --
 
 # Oui je n'ai pas réfléchi 1 seconde : http://stackoverflow.com/a/2566508
@@ -177,17 +196,17 @@ def find_nearest_idx(array,value):
 
 # Récupération du pourcentage associé à un nom
 def find_y_value(array, candidat_name):
-	index = array.index(candidat_name)
-	percent_idx = index + DECALAGE_POURCENTAGE
-	return from_comma_to_float(array[percent_idx])
+    index = array.index(candidat_name)
+    percent_idx = index + DECALAGE_POURCENTAGE
+    return from_comma_to_float(array[percent_idx])
 
 # ------------------- Traitement des données ---------------------------
-with open('Resultats2017.csv') as csvfile:
-	
+with open('INSEE-Resultats2017.csv') as csvfile:
+    
      rowreader = csv.reader(csvfile, delimiter=';', quotechar='|')
      
      for row in rowreader:
-		 
+         
          # Should we replace that by a ~switch ? http://stackoverflow.com/a/60211
          if (en_fonction_de == "PHARMACIES"):
              value = nombre_pharmacies(row)
@@ -195,6 +214,8 @@ with open('Resultats2017.csv') as csvfile:
              value = pourcent_proprio(row)
          elif (en_fonction_de == "CAPACITE_FISCALE"):
              value = capacite_fiscale(row)
+         elif (en_fonction_de == "MEDIANE"):
+             value = mediane(row)
          else:
              value = nombre_inscrits(row)
          

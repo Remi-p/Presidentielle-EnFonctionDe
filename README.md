@@ -69,6 +69,20 @@ min_occ = 15
 ---
 
 ```python
+candidat = "DUPONT-AIGNAN"
+en_fonction_de = "MEDIANE"
+abscisse = "Médiane du niveau de vie dans la commune"
+x_start = 12500
+x_end = 35000
+x_scale_log = False
+precision = 50
+min_occ = 15
+```
+![Pourcentage Dupont-Aignan en fonction de la médiane du niveau de vie dans la commune](Exemples-PNG/Mediane-Dupont-Aignan.png)
+
+---
+
+```python
 candidat = "POUTOU"
 en_fonction_de = "CAPACITE_FISCALE"
 abscisse = "Capacité fiscale moyenne de la commune"
@@ -113,3 +127,4 @@ Jeux de données utilisés :
 * [Résultats élections présidentielle 2017](https://www.data.gouv.fr/fr/datasets/election-presidentielle-des-23-avril-et-7-mai-2017-resultats-du-1er-tour-1/) : nombre d'inscrits, pourcentage de vote par candidats, etc. - INSEE, 2017
 * [Data INSEE sur les communes](http://www.data.gouv.fr/fr/datasets/data-insee-sur-les-communes/) : nombre de dentistes, de propriétaires, etc. - INSEE, 2014
 	* (Semble contenir des erreurs, et dater d'avant 2014)
+* [Revenus et pauvreté des ménages en 2013](https://www.insee.fr/fr/statistiques/2388572) : Médiane des salaires, taux de pauvreté, etc. - INSEE, 2013
