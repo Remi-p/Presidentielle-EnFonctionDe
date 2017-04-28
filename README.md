@@ -12,14 +12,72 @@ Le script a été majoritairement fait pour le fun pour mettre en vis-à-vis des
 
 ## Exemples
 
+```python
+candidat = "MACRON"
+en_fonction_de = "INSCRITS"
+abscisse = "Nombre d'inscrits dans la commune (échelle log.)"
+x_start = 10
+x_end = 100000
+x_scale_log = True
+precision = 50
+min_occ = 15
+```
 ![Pourcentage Macron en fonction du nombre d'inscrits dans la commune](Exemples-PNG/Nb-Inscrits-Macron.png)
 
+---
+
+```python
+candidat = "LE PEN"
+en_fonction_de = "INSCRITS"
+abscisse = "Nombre d'inscrits dans la commune (échelle log.)"
+x_start = 10
+x_end = 100000
+x_scale_log = True
+precision = 50
+min_occ = 15
+```
 ![Pourcentage Le Pen en fonction du nombre d'inscrits dans la commune](Exemples-PNG/Nb-Inscrits-Le-Pen.png)
 
+---
+
+```python
+candidat = "FILLON"
+en_fonction_de = "PHARMACIES"
+abscisse = "Nombre de pharmacies dans la commune"
+x_start = 0
+x_end = 8
+x_scale_log = False
+precision = 4
+min_occ = 15
+```
 ![Pourcentage Fillon en fonction du nombre de pharmacies dans la commune](Exemples-PNG/Nb-Pharmacies-Fillon.png)
 
+---
+
+```python
+candidat = "MÉLENCHON"
+en_fonction_de = "PROPRIETAIRES"
+abscisse = "Pourcentage de propriétaires dans la commune"
+x_start = 10
+x_end = 50
+x_scale_log = False
+precision = 30
+min_occ = 15
+```
 ![Pourcentage Mélenchon en fonction du pourcentage de propriétaires dans la commune](Exemples-PNG/Nb-Proprietaires-Mélenchon.png)
 
+---
+
+```python
+candidat = "POUTOU"
+en_fonction_de = "CAPACITE_FISCALE"
+abscisse = "Capacité fiscale moyenne de la commune"
+x_start = 50
+x_end = 300
+x_scale_log = False
+precision = 50
+min_occ = 15
+```
 ![Pourcentage Poutou en fonction de la capacité fiscale moyenne de la commune](Exemples-PNG/Capacite-Fiscale-Poutou.png)
 
 ## Système requis
