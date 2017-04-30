@@ -6,7 +6,7 @@ Il existe de nombreux biais dans le code.
 Il faut prendre en compte que le nombre de villes d'une certaine taille peut varier très fortement, rendant l'erreur statistique importante pour certains points des courbes.
 Par ailleurs toutes les villes > 100 000 habitants sont regroupées, il est intéressant de les séparer pour remarquer des disparités (Nice, Marseille).
 
-L'échelle par défaut est logarithmique.
+Par ailleurs, les communes d'outre-mer ne sont parfois pas pris en compte.
 
 Le script a été majoritairement fait pour le fun pour mettre en vis-à-vis des valeurs pas directement liées.
 
@@ -94,6 +94,20 @@ min_occ = 15
 ```
 ![Pourcentage Poutou en fonction de la capacité fiscale moyenne de la commune](Exemples-PNG/Capacite-Fiscale-Poutou.png)
 
+---
+
+```python
+candidat = "ASSELINEAU"
+en_fonction_de = "IMMIGRATION"
+abscisse = "Pourcentage d'immigration par commune"
+x_start = 0
+x_end = 30
+x_scale_log = False
+precision = 50
+min_occ = 15
+```
+![Pourcentage Asselineau en fonction du pourcentage d'immigration dans la commune](Exemples-PNG/Immigration-Asselineau.png)
+
 ## Système requis
 
 Le script est écrit en Python 3.
@@ -128,3 +142,4 @@ Jeux de données utilisés :
 * [Data INSEE sur les communes](http://www.data.gouv.fr/fr/datasets/data-insee-sur-les-communes/) : nombre de dentistes, de propriétaires, etc. - INSEE, 2014
 	* (Semble contenir des erreurs, et dater d'avant 2014)
 * [Revenus et pauvreté des ménages en 2013](https://www.insee.fr/fr/statistiques/2388572) : Médiane des salaires, taux de pauvreté, etc. - INSEE, 2013
+* [Nationalité et immigration en 2013](https://www.insee.fr/fr/statistiques/2044955) : Immigration par commune - INSEE, 2013

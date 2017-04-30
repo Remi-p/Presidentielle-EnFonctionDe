@@ -37,6 +37,7 @@ en_fonction_de = "INSCRITS"
 #                PROPRIETAIRES : Pourcentage de propriétaire dans la population
 #                CAPACITE_FISCALE : Capacite fiscale moyenne de la commune
 #                MEDIANE : Médiane du niveau de vie dans la commune
+#                IMMIGRATION : Pourcentage d'immigration par commune
 #  / \ 
 # / ! \ You should change x_start & x_end correspondingly
 
@@ -60,6 +61,7 @@ DECALAGE_POURCENTAGE = 4
 # RESULTATS_IGNORE_LINES = 4
 
 IDX_GEOCODE = 0
+MAX_SEARCH_LOOP = 15
 # Data INSEE sur les communes
 DATAINSEE_IGNORE_LINES = 1
 NB_DENTISTES = 18
@@ -67,11 +69,15 @@ NB_PHARMACIES = 1
 NB_PROPRIETAIRES = 31
 CAPACITE_FISCALE = 78
 POPULATION = 26
-MAX_SEARCH_LOOP = 10
 
 # INSEE - Revenus et pauvreté
 REVENUS_IGNORE_LINES = 6
 MEDIANE = 4
+
+# INSEE - Immigration
+IMMIGRATION_IGNORE_LINES = 11
+IMMIGRATION_IMM  = [2, 3, 6, 7, 10, 11, 14, 15] # Colonnes immigrés
+IMMIGRATION_NIMM = [4, 5, 8, 9, 12, 13, 16, 17] # Colonnes non-immigrés
 
 # Generating x axis :
 
@@ -104,6 +110,11 @@ if (en_fonction_de == "MEDIANE"):
     insee['revenus']['data'] = open("INSEE-Revenus-Pauvrete.csv")
     insee['revenus']['reader'] = csv.reader(insee['revenus']['data'], delimiter = ';')
     insee['revenus']['row'] = next(insee['revenus']['reader'])
+if (en_fonction_de == "IMMIGRATION"):
+    insee['immigration'] = {}
+    insee['immigration']['data'] = open("INSEE-Immigration.csv")
+    insee['immigration']['reader'] = csv.reader(insee['immigration']['data'], delimiter = ';')
+    insee['immigration']['row'] = next(insee['immigration']['reader'])
 
 def from_comma_to_float(toconvert):
     return float(toconvert.replace(',', '.'))
@@ -188,6 +199,25 @@ def mediane(array):
     else:
         return from_comma_to_float(row[MEDIANE])
 # --
+# -- Immigration
+def immigration(array):
+    row = find_commune_get_row(array, "immigration")
+    
+    if (row == None):
+        return None
+    else:
+        
+        immigres = 0
+        n_immigr = 0
+        for i in IMMIGRATION_IMM:
+            immigres += int(row[i])
+        for i in IMMIGRATION_NIMM:
+            n_immigr += int(row[i])
+        
+        pourcentage = ( immigres / (n_immigr + immigres) ) * 100
+        
+        return pourcentage
+# --
 
 # Oui je n'ai pas réfléchi 1 seconde : http://stackoverflow.com/a/2566508
 def find_nearest_idx(array,value):
@@ -216,6 +246,8 @@ with open('INSEE-Resultats2017.csv') as csvfile:
              value = capacite_fiscale(row)
          elif (en_fonction_de == "MEDIANE"):
              value = mediane(row)
+         elif (en_fonction_de == "IMMIGRATION"):
+             value = immigration(row)
          else:
              value = nombre_inscrits(row)
          
