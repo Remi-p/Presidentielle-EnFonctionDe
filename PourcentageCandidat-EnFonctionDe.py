@@ -49,8 +49,15 @@ precision = 50
 
 # Nombre minimum d'occurrences pour qu'un point apparaisse sur le graph :
 min_occ = 15
+# Nombre d'occurrences au-delà duquel un point est considéré fiable 
+fiable_occ = 100
+# Transparence minimal pour un point peu fiable (pourcentage)
+min_visibility = 50
 
 ########################################################################
+
+# Décalage pour le colormap
+min_visibility_dec = (fiable_occ - min_occ) * (min_visibility/100)
 
 # Résultats élection présidentielle 2017 - Column numbers
 DEPARTEMENT = 0
@@ -266,22 +273,26 @@ with open('INSEE-Resultats2017.csv') as csvfile:
 
 print(calculs)
 
-results = {'x_axis' : [], 'y_axis' : [] }
+results = {'x_axis' : [], 'y_axis' : [] , 'fiability' : []}
 
 for i in range(0, len(x_axis)):
     if (calculs['occurrences'][i] != 0 and calculs['occurrences'][i] > min_occ):
-        results['x_axis'].append(calculs['x_axis'][i])
+        results['x_axis'].append( calculs['x_axis'][i] )
         results['y_axis'].append( calculs['total'][i] / float(calculs['occurrences'][i]) )
+        
+        results['fiability'].append( calculs['occurrences'][i] )
 
-print(len(results['x_axis']))
+#~ print(len(results['x_axis']))
 
 #~ smooth_result = interp1d(results['nb_inscrits'], results['percent'], kind='slinear')
 #~ nb_inscrits_new = np.logspace(1, 5, precision*3)
 
+# Cf. http://stackoverflow.com/a/6065493
+plt.scatter(results['x_axis'], results['y_axis'], c=results['fiability'], vmin=min_occ - min_visibility_dec, vmax=fiable_occ, cmap=plt.cm.Blues)
+
 if (x_scale_log):
-    plt.semilogx(results['x_axis'], results['y_axis'], 'o')
-else:
-    plt.plot(results['x_axis'], results['y_axis'], 'o')
+    ax = plt.gca()
+    ax.set_xscale('log')
 
 plt.xlabel(abscisse)
 plt.ylabel('Pourcentage ' + candidat + ' 2017')

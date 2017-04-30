@@ -12,6 +12,8 @@ Le script a été majoritairement fait pour le fun pour mettre en vis-à-vis des
 
 ## Exemples
 
+Les points les moins foncés sont les moins fiables (en terme d'occurrences).
+
 ```python
 candidat = "MACRON"
 en_fonction_de = "INSCRITS"
@@ -20,7 +22,6 @@ x_start = 10
 x_end = 100000
 x_scale_log = True
 precision = 50
-min_occ = 15
 ```
 ![Pourcentage Macron en fonction du nombre d'inscrits dans la commune](Exemples-PNG/Nb-Inscrits-Macron.png)
 
@@ -34,7 +35,6 @@ x_start = 10
 x_end = 100000
 x_scale_log = True
 precision = 50
-min_occ = 15
 ```
 ![Pourcentage Le Pen en fonction du nombre d'inscrits dans la commune](Exemples-PNG/Nb-Inscrits-Le-Pen.png)
 
@@ -48,7 +48,6 @@ x_start = 0
 x_end = 8
 x_scale_log = False
 precision = 4
-min_occ = 15
 ```
 ![Pourcentage Fillon en fonction du nombre de pharmacies dans la commune](Exemples-PNG/Nb-Pharmacies-Fillon.png)
 
@@ -62,7 +61,6 @@ x_start = 10
 x_end = 50
 x_scale_log = False
 precision = 30
-min_occ = 15
 ```
 ![Pourcentage Mélenchon en fonction du pourcentage de propriétaires dans la commune](Exemples-PNG/Nb-Proprietaires-Mélenchon.png)
 
@@ -76,7 +74,6 @@ x_start = 12500
 x_end = 35000
 x_scale_log = False
 precision = 50
-min_occ = 15
 ```
 ![Pourcentage Dupont-Aignan en fonction de la médiane du niveau de vie dans la commune](Exemples-PNG/Mediane-Dupont-Aignan.png)
 
@@ -90,7 +87,6 @@ x_start = 50
 x_end = 300
 x_scale_log = False
 precision = 50
-min_occ = 15
 ```
 ![Pourcentage Poutou en fonction de la capacité fiscale moyenne de la commune](Exemples-PNG/Capacite-Fiscale-Poutou.png)
 
@@ -104,7 +100,6 @@ x_start = 0
 x_end = 30
 x_scale_log = False
 precision = 50
-min_occ = 15
 ```
 ![Pourcentage Asselineau en fonction du pourcentage d'immigration dans la commune](Exemples-PNG/Immigration-Asselineau.png)
 
@@ -125,7 +120,6 @@ sudo apt-get install python3 python3-numpy python3-matplotlib python3-scipy
 
 ## TODO
 
-* Mettre le nombre d'occurrences pour la fiabilité des résultats.
 * Calculer le pourcentage en fonction du nombre d'inscrits plutôt que d'occurrences
 	* Sur l'échelle logarithmique ? (pour la fonction `find_nearest_idx`)
 * Gérer plusieurs candidats sur un même graphique
