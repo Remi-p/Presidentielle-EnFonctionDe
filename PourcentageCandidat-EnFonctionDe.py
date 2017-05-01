@@ -14,6 +14,7 @@ import numpy as np
 # Plotting numbers
 # https://matplotlib.org/users/pyplot_tutorial.html
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 
 # Converting logarithm
 import math
@@ -25,7 +26,7 @@ import math
 ####################################################### VARIABLES ######
 
 # Candidat
-candidat = "MACRON"
+candidats = {"MACRON"}
 # Possibilités : MACRON / LE PEN / FILLON / MÉLENCHON / HAMON /
 #                DUPONT-AIGNAN / LASSALLE / POUTOU / ASSELINEAU /
 #                ARTHAUD / CHEMINADE
@@ -51,13 +52,42 @@ precision = 50
 min_occ = 15
 # Nombre d'occurrences au-delà duquel un point est considéré fiable 
 fiable_occ = 100
-# Transparence minimal pour un point peu fiable (pourcentage)
-min_visibility = 50
 
 ########################################################################
 
-# Décalage pour le colormap
-min_visibility_dec = (fiable_occ - min_occ) * (min_visibility/100)
+# Couleurs - Cf. https://matplotlib.org/examples/color/colormaps_reference.html
+default_colormap = plt.cm.Blues
+
+def colormap_between(fiable, nfiable):
+    return LinearSegmentedColormap.from_list('', [nfiable, fiable], N=100)
+    
+# Couleurs depuis https://fr.wikipedia.org/wiki/Liste_de_sondages_sur_l'%C3%A9lection_pr%C3%A9sidentielle_fran%C3%A7aise_de_2017
+colormap_for = { 'MACRON':        colormap_between((1,    0.64, 0),
+                                                   (1,    0.82, 0.50)),
+                 'LE PEN':        colormap_between((0.35, 0.23, 0.09),
+                                                   (0.69, 0.57, 0.42)),
+                 'FILLON':        colormap_between((0.04, 0.03, 0.40),
+                                                   (0.51, 0.51, 0.66)),
+                 'MÉLENCHON':     colormap_between((1,    0,    0),
+                                                   (1,    0.58, 0.58)),
+                 'HAMON':         colormap_between((0.85, 0.34, 0.43),
+                                                   (0.85, 0.66, 0.69)),
+                 'DUPONT-AIGNAN': colormap_between((0.40, 0.12, 0.45),
+                                                   (0.71, 0.51, 0.75)),
+                 'LASSALLE':      colormap_between((0.22, 0.22, 0.25),
+                                                   (0.58, 0.58, 0.68)),
+                 'POUTOU':        colormap_between((0.8,  0.11, 0.23),
+                                                   (0.8,  0.52, 0.57)),
+                 'ASSELINEAU':    colormap_between((0.44, 0.04, 0.50),
+                                                   (0.75, 0.55, 0.79)),
+                 'ARTHAUD':       colormap_between((0.50, 0,    0),
+                                                   (0.76, 0.51, 0.51)),
+                 'CHEMINADE':     colormap_between((0.22, 0.22, 0.25),
+                                                   (0.57, 0.57, 0.67)) }
+# Un peu moche, ce if.
+if (len(candidats) == 1):
+    for candidat in candidats:
+        colormap_for[candidat] = default_colormap
 
 # Résultats élection présidentielle 2017 - Column numbers
 DEPARTEMENT = 0
@@ -95,15 +125,22 @@ if (x_scale_log):
 else:
     x_axis  = np.linspace(x_start, x_end, precision)
 
+def tabl_dans_collection_candidats():
+    candidats_coll = {}
+    for candidat in candidats:
+        candidats_coll[candidat]=[]
+    return candidats_coll
+
 # Rq : Peut-être diviser par nb d'inscrits plutôt que par occurrence
 #      Rapport au fait que c'est mieux statistiquement parlant, tout ça.
-calculs = { 'x_axis' : [], 'occurrences' : [], 'total' : [] }
+calculs = { 'x_axis' : [], 'occurrences' : [], 'total' : tabl_dans_collection_candidats() }
 
 # Creating arrays
 for i in range(0, len(x_axis)):
     calculs['x_axis'].append(x_axis[i])
     calculs['occurrences'].append(0)
-    calculs['total'].append(0.00)
+    for candidat in candidats:
+        calculs['total'][candidat].append(0.00)
 
 # Initializing files
 insee = {}
@@ -265,7 +302,9 @@ with open('INSEE-Resultats2017.csv') as csvfile:
          nearest = find_nearest_idx(calculs['x_axis'], value)
          
          calculs['occurrences'][nearest] += 1
-         calculs['total'][nearest]       += find_y_value(row, candidat)
+         
+         for candidat in candidats:
+            calculs['total'][candidat][nearest] += find_y_value(row, candidat)
          
          # print(row[COMMUNE], row[INSCRITS])
 
@@ -273,12 +312,14 @@ with open('INSEE-Resultats2017.csv') as csvfile:
 
 print(calculs)
 
-results = {'x_axis' : [], 'y_axis' : [] , 'fiability' : []}
+results = {'x_axis' : [], 'y_axes' : tabl_dans_collection_candidats() , 'fiability' : []}
 
 for i in range(0, len(x_axis)):
     if (calculs['occurrences'][i] != 0 and calculs['occurrences'][i] > min_occ):
         results['x_axis'].append( calculs['x_axis'][i] )
-        results['y_axis'].append( calculs['total'][i] / float(calculs['occurrences'][i]) )
+        
+        for candidat in candidats:
+            results['y_axes'][candidat].append( calculs['total'][candidat][i] / float(calculs['occurrences'][i]) )
         
         results['fiability'].append( calculs['occurrences'][i] )
 
@@ -288,12 +329,28 @@ for i in range(0, len(x_axis)):
 #~ nb_inscrits_new = np.logspace(1, 5, precision*3)
 
 # Cf. http://stackoverflow.com/a/6065493
-plt.scatter(results['x_axis'], results['y_axis'], c=results['fiability'], vmin=min_occ - min_visibility_dec, vmax=fiable_occ, cmap=plt.cm.Blues)
+for candidat in candidats:
+    plt.scatter(results['x_axis'], results['y_axes'][candidat], c=results['fiability'], vmin=min_occ, vmax=fiable_occ, cmap=colormap_for[candidat], label=candidat)
+
+ax = plt.gca()
 
 if (x_scale_log):
-    ax = plt.gca()
     ax.set_xscale('log')
 
+if (len(candidats) > 1):
+    # Cf. http://stackoverflow.com/questions/30677151/python-scatter-plot-with-colorbar-and-legend-issues
+    plt.legend();
+    legend = ax.get_legend()
+    i = 0
+    for candidat in candidats:
+        legend.legendHandles[i].set_color(colormap_for[candidat](0.99))
+        i += 1
+    
+    plt.ylabel('Pourcentage 2017')
+else:
+    for candidat in candidats:
+        plt.ylabel('Pourcentage ' + candidat + ' 2017')
+        break
+
 plt.xlabel(abscisse)
-plt.ylabel('Pourcentage ' + candidat + ' 2017')
 plt.show()

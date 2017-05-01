@@ -15,7 +15,7 @@ Le script a été majoritairement fait pour le fun pour mettre en vis-à-vis des
 Les points les moins foncés sont les moins fiables (en terme d'occurrences).
 
 ```python
-candidat = "MACRON"
+candidats = {"MACRON"}
 en_fonction_de = "INSCRITS"
 abscisse = "Nombre d'inscrits dans la commune (échelle log.)"
 x_start = 10
@@ -28,7 +28,7 @@ precision = 50
 ---
 
 ```python
-candidat = "LE PEN"
+candidats = {"LE PEN"}
 en_fonction_de = "INSCRITS"
 abscisse = "Nombre d'inscrits dans la commune (échelle log.)"
 x_start = 10
@@ -41,7 +41,7 @@ precision = 50
 ---
 
 ```python
-candidat = "FILLON"
+candidats = {"FILLON"}
 en_fonction_de = "PHARMACIES"
 abscisse = "Nombre de pharmacies dans la commune"
 x_start = 0
@@ -54,7 +54,7 @@ precision = 4
 ---
 
 ```python
-candidat = "MÉLENCHON"
+candidats = {"MÉLENCHON"}
 en_fonction_de = "PROPRIETAIRES"
 abscisse = "Pourcentage de propriétaires dans la commune"
 x_start = 10
@@ -67,7 +67,7 @@ precision = 30
 ---
 
 ```python
-candidat = "DUPONT-AIGNAN"
+candidats = {"DUPONT-AIGNAN"}
 en_fonction_de = "MEDIANE"
 abscisse = "Médiane du niveau de vie dans la commune"
 x_start = 12500
@@ -80,7 +80,7 @@ precision = 50
 ---
 
 ```python
-candidat = "POUTOU"
+candidats = {"POUTOU"}
 en_fonction_de = "CAPACITE_FISCALE"
 abscisse = "Capacité fiscale moyenne de la commune"
 x_start = 50
@@ -93,7 +93,7 @@ precision = 50
 ---
 
 ```python
-candidat = "ASSELINEAU"
+candidats = {"ASSELINEAU"}
 en_fonction_de = "IMMIGRATION"
 abscisse = "Pourcentage d'immigration par commune"
 x_start = 0
@@ -122,7 +122,6 @@ sudo apt-get install python3 python3-numpy python3-matplotlib python3-scipy
 
 * Calculer le pourcentage en fonction du nombre d'inscrits plutôt que d'occurrences
 	* Sur l'échelle logarithmique ? (pour la fonction `find_nearest_idx`)
-* Gérer plusieurs candidats sur un même graphique
 * Rajouter des corrélations possibles
 * Interpoler les courbes
 
